@@ -6,7 +6,11 @@ import cors from 'cors';
 
 const app: Application = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: 'https://ababil-library.vercel.app',
+  })
+);
 
 app.use('/api', bookRoutes);
 app.use('/api', borrowRoutes);
