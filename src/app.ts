@@ -1,8 +1,13 @@
 import express, { Application, Request, Response } from 'express';
 const app: Application = express();
 import cors from 'cors';
-app.use(cors());
 app.use(express.json());
+
+const corsOptions = {
+  origin: 'https://ababil-library-client-dx8q.vercel.app',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 import bookRoutes from '../src/routes/book.route';
 import borrowRoutes from '../src/routes/borrow.route';
