@@ -4,8 +4,7 @@ import cors from 'cors';
 app.use(express.json());
 
 const corsOptions = {
-  origin: 'https://ababil-library-client-dx8q.vercel.app',
-  credentials: true,
+  origin: 'https://ababil-library.vercel.app',
 };
 app.use(cors(corsOptions));
 

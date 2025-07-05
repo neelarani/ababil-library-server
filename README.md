@@ -1,4 +1,4 @@
-## Library Management API
+## Ababil Library API
 
 Library Management API is a powerful and developer-friendly RESTful backend
 application built using TypeScript, Express.js, and MongoDB. It is designed to
@@ -11,7 +11,7 @@ accurate data and provides clear error messages to make development easier.
 
 ### Live Demo
 
-[ababil-library-management-api](https://ababil-library-management-api.vercel.app/)
+[ababil-library](https://ababil-library-server.vercel.app)
 
 ### Features
 
