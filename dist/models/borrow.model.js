@@ -32,9 +32,19 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Borrow = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
+const book_model_1 = require("./book.model");
 const borrowSchema = new mongoose_1.Schema({
     book: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Book', required: true },
     quantity: {
@@ -50,5 +60,51 @@ const borrowSchema = new mongoose_1.Schema({
 }, {
     versionKey: false,
     timestamps: true,
+});
+borrowSchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const book = yield book_model_1.Book.findById(this.book);
+        if (!book)
+            return next();
+        if ((book === null || book === void 0 ? void 0 : book.copies) < 1) {
+            book.available = false;
+        }
+        yield book.save();
+        next();
+    });
+});
+borrowSchema.static('getBorrowedBooksSummary', function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        const summary = yield exports.Borrow.aggregate([
+            {
+                $group: {
+                    _id: '$book',
+                    totalQuantity: { $sum: '$quantity' },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'books',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'bookInfo',
+                },
+            },
+            {
+                $unwind: '$bookInfo',
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalQuantity: 1,
+                    book: {
+                        title: '$bookInfo.title',
+                        isbn: '$bookInfo.isbn',
+                    },
+                },
+            },
+        ]);
+        return summary;
+    });
 });
 exports.Borrow = mongoose_1.default.model('Borrow', borrowSchema);

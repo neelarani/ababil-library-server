@@ -15,7 +15,8 @@ const book_model_1 = require("./../models/book.model");
 const createBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const bookData = req.body;
-        const book = yield book_model_1.Book.create(bookData);
+        const available = Number(bookData.copies) > 0;
+        const book = yield book_model_1.Book.create(Object.assign(Object.assign({}, bookData), { available }));
         res.status(201).json({
             success: true,
             message: 'Book Created successfully',

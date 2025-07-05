@@ -44,12 +44,11 @@ const borrowBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 return;
             }
             book.copies -= quantity;
-            yield book.checkAvailability();
             yield book.save();
             const borrowData = yield borrow_model_1.Borrow.create({
                 book: bookId,
                 quantity,
-                dueDate: dueDate || new Date(),
+                dueDate: dueDate,
             });
             res.status(201).json({
                 success: true,
@@ -69,35 +68,7 @@ const borrowBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.borrowBook = borrowBook;
 const getBorrowedBooksSummary = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const summary = yield borrow_model_1.Borrow.aggregate([
-            {
-                $group: {
-                    _id: '$book',
-                    totalQuantity: { $sum: '$quantity' },
-                },
-            },
-            {
-                $lookup: {
-                    from: 'books',
-                    localField: '_id',
-                    foreignField: '_id',
-                    as: 'bookInfo',
-                },
-            },
-            {
-                $unwind: '$bookInfo',
-            },
-            {
-                $project: {
-                    _id: 0,
-                    totalQuantity: 1,
-                    book: {
-                        title: '$bookInfo.title',
-                        isbn: '$bookInfo.isbn',
-                    },
-                },
-            },
-        ]);
+        const summary = yield borrow_model_1.Borrow.getBorrowedBooksSummary();
         res.status(200).json({
             success: true,
             message: 'Borrowed books summary retrieved successfully',

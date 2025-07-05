@@ -44,6 +44,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Book = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
+const borrow_model_1 = require("./borrow.model");
 const bookSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     author: { type: String, required: true },
@@ -72,19 +73,12 @@ const bookSchema = new mongoose_1.Schema({
     },
     available: { type: Boolean, default: true },
 }, { timestamps: true, versionKey: false });
-bookSchema.methods.checkAvailability = function () {
+bookSchema.post('findOneAndDelete', function (doc, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (this.copies === 0) {
-            this.available = false;
-            yield this.save();
+        if (doc) {
+            yield borrow_model_1.Borrow.deleteMany({ book: doc._id });
         }
+        next();
     });
-};
-bookSchema.pre('save', function (next) {
-    console.log('saving post.......');
-    next();
-});
-bookSchema.post('save', function (doc) {
-    console.log('noting');
 });
 exports.Book = mongoose_1.default.model('Book', bookSchema);
