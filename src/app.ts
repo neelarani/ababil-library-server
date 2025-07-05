@@ -5,12 +5,8 @@ import globalErrorHandler from './middleware/errorHandler';
 import cors from 'cors';
 
 const app: Application = express();
+app.use(cors());
 app.use(express.json());
-app.use(
-  cors({
-    origin: 'https://ababil-library.vercel.app',
-  })
-);
 
 app.use('/api', bookRoutes);
 app.use('/api', borrowRoutes);
