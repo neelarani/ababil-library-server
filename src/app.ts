@@ -1,16 +1,12 @@
 import express, { Application, Request, Response } from 'express';
-const app: Application = express();
-import cors from 'cors';
-app.use(express.json());
-
-const corsOptions = {
-  origin: 'https://ababil-library.vercel.app',
-};
-app.use(cors(corsOptions));
-
 import bookRoutes from '../src/routes/book.route';
 import borrowRoutes from '../src/routes/borrow.route';
 import globalErrorHandler from './middleware/errorHandler';
+import cors from 'cors';
+
+const app: Application = express();
+app.use(express.json());
+app.use(cors());
 
 app.use('/api', bookRoutes);
 app.use('/api', borrowRoutes);
