@@ -34,9 +34,8 @@ const getAllBooks = async (req: Request, res: Response) => {
     if (filter) {
       query.genre = filter;
     }
-    const books = await Book.find(query)
-      .sort({ [sortBy as string]: 1 })
-      .limit(10);
+    const books = await Book.find(query).sort({ [sortBy as string]: 1 });
+
     res.status(201).json({
       success: true,
       message: 'Books retrieved successfully',

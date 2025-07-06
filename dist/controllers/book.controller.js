@@ -42,9 +42,7 @@ const getAllBooks = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (filter) {
             query.genre = filter;
         }
-        const books = yield book_model_1.Book.find(query)
-            .sort({ [sortBy]: 1 })
-            .limit(10);
+        const books = yield book_model_1.Book.find(query).sort({ [sortBy]: 1 });
         res.status(201).json({
             success: true,
             message: 'Books retrieved successfully',
